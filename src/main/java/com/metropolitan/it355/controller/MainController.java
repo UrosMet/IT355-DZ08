@@ -18,7 +18,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/")
+@RequestMapping("/admin")
 public class MainController {
 
     final CityService cityService;
