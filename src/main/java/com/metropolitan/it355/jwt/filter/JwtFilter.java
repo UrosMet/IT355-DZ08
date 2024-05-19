@@ -3,6 +3,7 @@ package com.metropolitan.it355.jwt.filter;
 import com.metropolitan.it355.entity.User;
 import com.metropolitan.it355.jwt.JwtService;
 import com.metropolitan.it355.repository.UserRepository;
+import com.metropolitan.it355.services.TokenBlackListService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,6 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private JwtService jwtService;
     private UserRepository userRepository;
+    private TokenBlackListService tokenBlackListService;
 
 
     @Override
@@ -34,6 +36,10 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             String jwt = authHeader.split(" ")[1];
 
+            if (tokenBlackListService.isTokenBlacklisted(jwt)) {
+                extracted(response, "Please login - Token blacklisted");
+                return;
+            }
 
             String username = jwtService.extractUsername(jwt);
             User user = userRepository.findByUsername(username).get();

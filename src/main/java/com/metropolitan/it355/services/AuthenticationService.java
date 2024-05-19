@@ -9,4 +9,5 @@ import java.util.Map;
 public interface AuthenticationService {
     LoginResponse login(UserDTO authenticationRequest);
     Map<String, Object> generateExtraClaims(User user);
+    void logout(String token);
 }

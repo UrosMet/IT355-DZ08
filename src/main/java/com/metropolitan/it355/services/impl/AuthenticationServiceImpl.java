@@ -6,9 +6,11 @@ import com.metropolitan.it355.entity.User;
 import com.metropolitan.it355.jwt.JwtService;
 import com.metropolitan.it355.repository.UserRepository;
 import com.metropolitan.it355.services.AuthenticationService;
+import com.metropolitan.it355.services.TokenBlackListService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final TokenBlackListService tokenBlackListService;
 
 
     @Override
@@ -42,5 +45,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         extraClaims.put("ID" , user.getId());
         extraClaims.put("Username" , user.getUsername());
         return extraClaims;
+    }
+
+    @Override
+    public void logout(String token) {
+        tokenBlackListService.blacklistToken(token);
+        SecurityContextHolder.clearContext();
     }
 }
